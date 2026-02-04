@@ -277,6 +277,89 @@
             gap: 1rem;
         }
 
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            aside {
+                display: none;
+                /* Hide sidebar on mobile */
+            }
+
+            main {
+                margin-left: 0;
+                padding: 1rem;
+                padding-bottom: 5rem;
+                /* Space for bottom nav */
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal .glass-card {
+                width: 95%;
+                margin: 0 0.5rem;
+            }
+
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(15, 23, 42, 0.95);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-top: 1px solid var(--glass-border);
+                padding: 0.75rem 0;
+                justify-content: space-around;
+                z-index: 1000;
+            }
+
+            .mobile-nav a {
+                color: var(--text-muted);
+                text-decoration: none;
+                font-size: 1.2rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                transition: 0.3s;
+                cursor: pointer;
+            }
+
+            .mobile-nav a span {
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                font-weight: 700;
+            }
+
+            .mobile-nav a.active {
+                color: var(--primary);
+            }
+        }
+
+        /* Desktop hide mobile nav */
+        @media (min-width: 769px) {
+            .mobile-nav {
+                display: none;
+            }
+        }
+
+
         /* Modal classes */
         .modal {
             display: none;
@@ -312,6 +395,14 @@
                 </ul>
             </nav>
         </aside>
+
+        <div class="mobile-nav">
+            <a onclick="showView('dashboard')" id="m-nav-dashboard" class="active"><i
+                    class="fas fa-th-large"></i><span>Dash</span></a>
+            <a onclick="showView('learn')" id="m-nav-learn"><i class="fas fa-book-open"></i><span>Learn</span></a>
+            <a onclick="showView('game')" id="m-nav-game"><i class="fas fa-gamepad"></i><span>Game</span></a>
+            <a onclick="showView('words')" id="m-nav-words"><i class="fas fa-list"></i><span>Words</span></a>
+        </div>
 
         <main>
             <!-- Dashboard View -->
@@ -457,9 +548,15 @@
         function showView(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.mobile-nav a').forEach(a => a.classList.remove('active'));
 
             document.getElementById(`view-${viewName}`).classList.add('active');
-            document.getElementById(`nav-${viewName}`).classList.add('active');
+
+            const desktopNav = document.getElementById(`nav-${viewName}`);
+            if (desktopNav) desktopNav.classList.add('active');
+
+            const mobileNav = document.getElementById(`m-nav-${viewName}`);
+            if (mobileNav) mobileNav.classList.add('active');
 
             if (viewName === 'words') renderWordsTable();
             if (viewName === 'learn') renderLearnList();
