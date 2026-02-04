@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reminder Pro - Smart Vocabulary Learning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    <title>Reminder Pro | Premium Vocabulary Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -13,14 +13,40 @@
             --primary: #6366f1;
             --primary-glow: rgba(99, 102, 241, 0.5);
             --secondary: #ec4899;
+            --secondary-glow: rgba(236, 72, 153, 0.4);
             --accent: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --background: #0f172a;
             --surface: #1e293b;
             --text: #f8fafc;
             --text-muted: #94a3b8;
             --glass: rgba(255, 255, 255, 0.03);
+            --glass-hover: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="ocean"] {
+            --primary: #0ea5e9;
+            --primary-glow: rgba(14, 165, 233, 0.5);
+            --background: #0c4a6e;
+            --surface: #075985;
+        }
+
+        [data-theme="forest"] {
+            --primary: #22c55e;
+            --primary-glow: rgba(34, 197, 94, 0.5);
+            --background: #064e3b;
+            --surface: #065f46;
+        }
+
+        [data-theme="purple"] {
+            --primary: #a855f7;
+            --primary-glow: rgba(168, 85, 247, 0.5);
+            --background: #2e1065;
+            --surface: #4c1d95;
         }
 
         * {
@@ -28,16 +54,29 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Outfit', sans-serif;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        *::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 20px;
         }
 
         body {
             background-color: var(--background);
             background-image:
                 radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
+                radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
             color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: var(--transition);
         }
 
         .app-container {
@@ -49,26 +88,33 @@
         aside {
             width: 280px;
             background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-right: 1px solid var(--glass-border);
             padding: 2.5rem 1.5rem;
             position: fixed;
             height: 100vh;
             z-index: 100;
+            transition: var(--transition);
         }
 
         .logo {
-            font-size: 1.75rem;
-            font-weight: 800;
+            font-size: 1.85rem;
+            font-weight: 900;
             background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-            margin-bottom: 3rem;
+            letter-spacing: -1.5px;
+            margin-bottom: 3.5rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.8rem;
+        }
+
+        .logo i {
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+            -webkit-text-fill-color: var(--primary);
         }
 
         .nav-links {
@@ -76,32 +122,41 @@
         }
 
         .nav-links li {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.8rem;
         }
 
         .nav-links a {
             color: var(--text-muted);
             text-decoration: none;
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 1.1rem;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             gap: 1rem;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            transition: var(--transition);
             cursor: pointer;
+            border: 1px solid transparent;
         }
 
         .nav-links a:hover {
             background: var(--glass);
             color: var(--text);
-            transform: translateX(5px);
+            transform: translateX(8px);
+            border-color: var(--glass-border);
         }
 
         .nav-links a.active {
             background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
             color: white;
-            box-shadow: 0 4px 15px var(--primary-glow);
+            box-shadow: 0 10px 25px -5px var(--primary-glow);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-links a i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
         }
 
         /* Main Content */
@@ -109,114 +164,236 @@
             flex: 1;
             margin-left: 280px;
             padding: 3rem;
+            max-width: 1400px;
+            transition: var(--transition);
         }
 
         .view {
             display: none;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
+            transform: translateY(20px) scale(0.98);
         }
 
         .view.active {
             display: block;
-            opacity: 1;
-            transform: translateY(0);
+            animation: view-enter 0.5s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        @keyframes view-enter {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2rem;
+            border-radius: 28px;
+            padding: 2.2rem;
             box-shadow: var(--card-shadow);
             margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: var(--glass-hover);
         }
 
         h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
-            letter-spacing: -1px;
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 2.5rem;
+            letter-spacing: -1.5px;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
 
         .btn {
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
+            padding: 1rem 1.8rem;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
+            justify-content: center;
+            gap: 0.7rem;
+            font-size: 1rem;
             text-decoration: none;
+            color: white;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+            opacity: 0;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
-            color: white;
-            box-shadow: 0 4px 15px var(--primary-glow);
+            box-shadow: 0 10px 20px -5px var(--primary-glow);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-glow);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 30px -5px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            border-color: var(--glass-border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass-hover);
+            transform: translateY(-3px);
+            border-color: var(--text-muted);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, #059669 100%);
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);
         }
 
         /* Dashboard Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
             margin-bottom: 3rem;
         }
 
         .stat-item {
-            padding: 1.5rem;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stat-item i {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 6rem;
+            opacity: 0.05;
+            transform: rotate(-15deg);
         }
 
         .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: 3.5rem;
+            font-weight: 900;
             display: block;
+            line-height: 1;
             margin-bottom: 0.5rem;
         }
 
         .stat-label {
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-weight: 700;
         }
 
-        /* Forms */
-        input,
-        textarea,
-        select {
-            background: rgba(255, 255, 255, 0.05);
+        /* Charts / Progress Area */
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) calc(var(--percent) * 1%), var(--glass) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: var(--background);
+            border-radius: 50%;
+        }
+
+        .progress-circle span {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        /* Word Management View */
+        .search-bar {
+            background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 0.8rem 1rem;
-            color: white;
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
             width: 100%;
-            margin-bottom: 1rem;
-            font-size: 1rem;
+            max-width: 500px;
         }
 
-        input:focus,
-        textarea:focus,
-        select:focus {
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            width: 100%;
             outline: none;
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.08);
         }
 
-        /* Table */
+        .table-container {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -224,94 +401,278 @@
 
         th {
             text-align: left;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.05);
             padding: 1.5rem;
             color: var(--text-muted);
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
         }
 
         td {
-            padding: 1.2rem 1.5rem;
+            padding: 1.3rem 1.5rem;
             border-bottom: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.2);
+            transition: var(--transition);
         }
 
-        /* Game */
-        .game-container {
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .word-cell {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--glass);
+            color: var(--text-muted);
+        }
+
+        .action-btn:hover {
+            color: white;
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+        }
+
+        /* Flashcard Component */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
             max-width: 600px;
+            height: 400px;
             margin: 0 auto;
-            text-align: center;
+            cursor: pointer;
         }
 
-        .options-grid {
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 32px;
+            background: var(--glass);
+            border: 2px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, var(--surface) 0%, var(--background) 100%);
+        }
+
+        .flashcard h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .flashcard p {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Game UI */
+        .game-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 1.5rem;
             margin-top: 2rem;
         }
 
-        .option-btn {
+        .game-option {
+            background: var(--glass);
+            border: 2px solid var(--glass-border);
+            padding: 1.8rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .game-option:hover {
+            background: var(--primary);
+            border-color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px var(--primary-glow);
+        }
+
+        .game-option.correct {
+            background: var(--accent) !important;
+            border-color: white;
+            animation: pulse-green 0.5s;
+        }
+
+        .game-option.wrong {
+            background: var(--danger) !important;
+            border-color: white;
+            animation: shake 0.5s;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        /* Modals Modern */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-card {
+            width: 90%;
+            max-width: 550px;
+            transform: translateY(30px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 1.5rem;
+            border: 2px solid var(--glass-border);
             border-radius: 16px;
+            padding: 1rem 1.2rem;
             color: white;
             font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
         }
 
-        .option-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
+        input:focus,
+        textarea:focus {
+            outline: none;
             border-color: var(--primary);
-            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px var(--primary-glow);
         }
 
-        #toast-container {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
         }
 
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
             aside {
-                display: none;
-                /* Hide sidebar on mobile */
+                transform: translateX(-100%);
             }
 
             main {
                 margin-left: 0;
-                padding: 1rem;
-                padding-bottom: 5rem;
-                /* Space for bottom nav */
-            }
-
-            h1 {
-                font-size: 1.8rem;
-                margin-bottom: 1.5rem;
+                padding: 1.5rem;
+                padding-bottom: 6rem;
             }
 
             .stats-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 gap: 1rem;
             }
 
-            .stat-value {
-                font-size: 1.5rem;
-            }
-
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .modal .glass-card {
-                width: 95%;
-                margin: 0 0.5rem;
+            h1 {
+                font-size: 2.2rem;
             }
 
             .mobile-nav {
@@ -320,11 +681,10 @@
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                background: rgba(15, 23, 42, 0.95);
+                background: rgba(15, 23, 42, 0.9);
                 backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
                 border-top: 1px solid var(--glass-border);
-                padding: 0.75rem 0;
+                padding: 1rem 0;
                 justify-content: space-around;
                 z-index: 1000;
             }
@@ -332,53 +692,122 @@
             .mobile-nav a {
                 color: var(--text-muted);
                 text-decoration: none;
-                font-size: 1.2rem;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 4px;
-                transition: 0.3s;
-                cursor: pointer;
+                gap: 5px;
+                font-size: 1.2rem;
+                transition: var(--transition);
             }
 
             .mobile-nav a span {
-                font-size: 0.65rem;
-                text-transform: uppercase;
+                font-size: 0.7rem;
                 font-weight: 700;
+                text-transform: uppercase;
             }
 
             .mobile-nav a.active {
                 color: var(--primary);
+                transform: translateY(-5px);
+            }
+
+            .game-options {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* Desktop hide mobile nav */
         @media (min-width: 769px) {
             .mobile-nav {
                 display: none;
             }
         }
 
-
-        /* Modal classes */
-        .modal {
-            display: none;
+        /* Toast Notifications */
+        #toast-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .toast {
+            background: var(--surface);
+            border-left: 4px solid var(--primary);
+            padding: 1.2rem 2rem;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 1rem;
+            animation: slide-in 0.5s forwards;
+            min-width: 300px;
+        }
+
+        @keyframes slide-in {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Success/XP Animation */
+        .xp-pop {
+            position: fixed;
+            pointer-events: none;
+            color: var(--warning);
+            font-weight: 900;
+            font-size: 2rem;
+            z-index: 3000;
+            animation: float-up 1s forwards ease-out;
+        }
+
+        @keyframes float-up {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        /* Theme Settings */
+        .theme-picker {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .theme-btn.active {
+            border-color: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 
 <body>
     <div class="app-container">
+        <!-- Desktop Sidebar -->
         <aside>
             <div class="logo">
                 <i class="fas fa-brain"></i>
@@ -387,140 +816,286 @@
             <nav>
                 <ul class="nav-links">
                     <li><a onclick="showView('dashboard')" id="nav-dashboard" class="active"><i
-                                class="fas fa-th-large"></i> Dashboard</a></li>
-                    <li><a onclick="showView('learn')" id="nav-learn"><i class="fas fa-book-open"></i> O'rganish</a>
-                    </li>
+                                class="fas fa-grid-2"></i> Dashboard</a></li>
+                    <li><a onclick="showView('flashcards')" id="nav-flashcards"><i class="fas fa-clone"></i>
+                            Flashcards</a></li>
                     <li><a onclick="showView('game')" id="nav-game"><i class="fas fa-gamepad"></i> Game Mode</a></li>
-                    <li><a onclick="showView('words')" id="nav-words"><i class="fas fa-list"></i> So'zlar</a></li>
+                    <li><a onclick="showView('words')" id="nav-words"><i class="fas fa-layer-group"></i> My Words</a>
+                    </li>
+                    <li><a onclick="showView('settings')" id="nav-settings"><i class="fas fa-sliders"></i> Settings</a>
+                    </li>
                 </ul>
             </nav>
         </aside>
 
+        <!-- Mobile Bottom Nav -->
         <div class="mobile-nav">
             <a onclick="showView('dashboard')" id="m-nav-dashboard" class="active"><i
-                    class="fas fa-th-large"></i><span>Dash</span></a>
-            <a onclick="showView('learn')" id="m-nav-learn"><i class="fas fa-book-open"></i><span>Learn</span></a>
-            <a onclick="showView('game')" id="m-nav-game"><i class="fas fa-gamepad"></i><span>Game</span></a>
+                    class="fas fa-grid-2"></i><span>Dash</span></a>
+            <a onclick="showView('flashcards')" id="m-nav-flashcards"><i class="fas fa-clone"></i><span>Cards</span></a>
+            <a onclick="showView('game')" id="m-nav-game"><i class="fas fa-gamepad"></i><span>Play</span></a>
             <a onclick="showView('words')" id="m-nav-words"><i class="fas fa-list"></i><span>Words</span></a>
+            <a onclick="showView('settings')" id="m-nav-settings"><i class="fas fa-cog"></i><span>Set</span></a>
         </div>
 
         <main>
             <!-- Dashboard View -->
             <div id="view-dashboard" class="view active">
-                <h1>Xush kelibsiz!</h1>
+                <h1>Hush kelibsiz!</h1>
                 <div class="stats-grid">
                     <div class="glass-card stat-item">
-                        <span class="stat-value" id="stat-words" style="color: var(--primary)">0</span>
+                        <i class="fas fa-book"></i>
                         <span class="stat-label">Jami so'zlar</span>
+                        <span class="stat-value" id="stat-words" style="color: var(--primary);">0</span>
                     </div>
                     <div class="glass-card stat-item">
-                        <span class="stat-value" id="stat-xp" style="color: var(--secondary)">0</span>
-                        <span class="stat-label">To'plangan XP</span>
+                        <i class="fas fa-bolt"></i>
+                        <span class="stat-label">Tajriba (XP)</span>
+                        <span class="stat-value" id="stat-xp" style="color: var(--warning);">0</span>
                     </div>
                     <div class="glass-card stat-item">
-                        <span class="stat-value" id="stat-streak" style="color: #f59e0b">🔥 0</span>
-                        <span class="stat-label">Joriy Streak</span>
+                        <i class="fas fa-fire"></i>
+                        <span class="stat-label">Streak</span>
+                        <span class="stat-value" id="stat-streak" style="color: var(--secondary);">0</span>
                     </div>
                 </div>
-                <div class="glass-card">
-                    <h2 style="margin-bottom: 1.5rem;">Tezkor harakatlar</h2>
-                    <div style="display: flex; gap: 1rem;">
-                        <button onclick="showView('learn')" class="btn btn-primary"><i class="fas fa-play"></i>
-                            O'rganishni boshlash</button>
-                        <button onclick="showView('game')" class="btn"
-                            style="background: rgba(255,255,255,0.05); color: white;"><i class="fas fa-gamepad"></i>
-                            Game Mode</button>
+
+                <div class="dashboard-content">
+                    <div class="glass-card">
+                        <h2><i class="fas fa-chart-line"></i> Haftalik progress</h2>
+                        <div style="height: 200px; display: flex; align-items: flex-end; gap: 1rem; padding-top: 2rem;">
+                            <!-- Mock Mini Chart -->
+                            <div style="flex:1; background: var(--glass); height:30%; border-radius: 8px; position:relative;"
+                                id="chart-d1">
+                                <div
+                                    style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; padding-bottom:5px;">
+                                    Dush</div>
+                            </div>
+                            <div style="flex:1; background: var(--glass); height:50%; border-radius: 8px; position:relative;"
+                                id="chart-d2">
+                                <div
+                                    style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; padding-bottom:5px;">
+                                    Sesh</div>
+                            </div>
+                            <div style="flex:1; background: var(--glass); height:70%; border-radius: 8px; position:relative;"
+                                id="chart-d3">
+                                <div
+                                    style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; padding-bottom:5px;">
+                                    Chor</div>
+                            </div>
+                            <div style="flex:1; background: var(--glass); height:40%; border-radius: 8px; position:relative;"
+                                id="chart-d4">
+                                <div
+                                    style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; padding-bottom:5px;">
+                                    Pay</div>
+                            </div>
+                            <div style="flex:1; background: var(--glass); height:85%; border-radius: 8px; position:relative;"
+                                id="chart-d5">
+                                <div
+                                    style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; padding-bottom:5px;">
+                                    Jum</div>
+                            </div>
+                            <div style="flex:1; background: var(--glass); height:60%; border-radius: 8px; position:relative;"
+                                id="chart-d6">
+                                <div
+                                    style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; padding-bottom:5px;">
+                                    Shan</div>
+                            </div>
+                            <div style="flex:1; background: var(--primary); height:95%; border-radius: 8px; position:relative;"
+                                id="chart-d7">
+                                <div
+                                    style="position:absolute; bottom:100%; width:100%; text-align:center; font-size:10px; padding-bottom:5px; font-weight:800; color:var(--primary);">
+                                    Yak</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card"
+                        style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <h2 style="margin-bottom: 2rem;">Mastery</h2>
+                        <div class="progress-circle" id="mastery-circle" style="--percent: 65">
+                            <span>65%</span>
+                        </div>
+                        <p style="margin-top: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                            Siz bugungi rejaning 65% qismini bajardingiz!</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Learn View -->
-            <div id="view-learn" class="view">
+            <!-- Flashcards View -->
+            <div id="view-flashcards" class="view">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h1>Bugungi so'zlar</h1>
-                    <button onclick="showView('game')" class="btn btn-primary"><i class="fas fa-vial"></i> Testga
-                        o'tish</button>
+                    <h1>Flashcards</h1>
+                    <div style="display: flex; gap: 1rem;">
+                        <span id="card-counter"
+                            style="background: var(--glass); padding: 0.5rem 1rem; border-radius: 12px; font-weight: 700;">1
+                            / 10</span>
+                    </div>
                 </div>
-                <div class="glass-card" style="padding: 0;">
-                    <div id="learn-list" style="max-height: 70vh; overflow-y: auto; padding: 2rem;">
-                        <!-- Words injected here -->
+
+                <div class="flashcard-container" onclick="flipCard()">
+                    <div class="flashcard" id="active-card">
+                        <div class="flashcard-face">
+                            <i class="fas fa-volume-up" onclick="speakText(event)"
+                                style="position: absolute; top: 2rem; right: 2rem; font-size: 1.5rem; color: var(--primary);"></i>
+                            <h2 id="card-front-text">Apple</h2>
+                            <p>Inglizcha so'z</p>
+                            <small style="margin-top: 2rem; color: var(--primary);">Bosing va tarjimasini
+                                ko'ring</small>
+                        </div>
+                        <div class="flashcard-face flashcard-back">
+                            <h2 id="card-back-text">Olma</h2>
+                            <p id="card-def-text">A round fruit with red or green skin and a whitish inside.</p>
+                            <div style="display: flex; gap: 1rem; margin-top: 2.5rem;">
+                                <button class="btn btn-secondary" onclick="nextCard(event, false)">Bilmayman</button>
+                                <button class="btn btn-primary" onclick="nextCard(event, true)">Bilaman</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Game View -->
             <div id="view-game" class="view">
-                <div class="game-container">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                        <h1>Game Mode</h1>
-                        <div class="glass-card"
-                            style="padding: 0.5rem 1.5rem; display: flex; gap: 1.5rem; font-weight: 600;">
-                            <span style="color: var(--secondary)"><i class="fas fa-gem"></i> XP: <span
-                                    id="game-xp">0</span></span>
-                            <span style="color: #f59e0b"><i class="fas fa-fire"></i> <span
-                                    id="game-streak">0</span>x</span>
-                        </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h1>Game Mode</h1>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <span class="glass-card"
+                            style="margin:0; padding: 0.6rem 1.2rem; display: flex; gap: 0.8rem; font-weight: 700; color: var(--warning);">
+                            <i class="fas fa-gem"></i> <span id="game-xp">0</span>
+                        </span>
+                        <span class="glass-card"
+                            style="margin:0; padding: 0.6rem 1.2rem; display: flex; gap: 0.8rem; font-weight: 700; color: var(--secondary);">
+                            <i class="fas fa-fire"></i> <span id="game-streak-val">0</span>x
+                        </span>
                     </div>
-                    <div class="glass-card" id="quiz-box"
-                        style="min-height: 400px; display: flex; flex-direction: column; justify-content: center;">
-                        <!-- Quiz injected here -->
-                    </div>
+                </div>
+
+                <div class="glass-card" id="game-box" style="min-height: 450px; position: relative;">
+                    <!-- Game content injected here -->
                 </div>
             </div>
 
             <!-- Words View -->
             <div id="view-words" class="view">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h1>So'zlar boshqaruvi</h1>
-                    <div style="display: flex; gap: 10px;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h1>So'zlar boshqaruvi</h1>
+                        <p style="color: var(--text-muted); margin-top: -1.5rem;">O'zingizning shaxsiy lug'atingizni
+                            yarating</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
                         <button class="btn btn-primary" onclick="openModal('add-word-modal')"><i
-                                class="fas fa-plus"></i> Yangi so'z</button>
-                        <button class="btn" style="background-color: var(--accent); color: white;"
-                            onclick="openModal('bulk-add-modal')"><i class="fas fa-file-import"></i> Ommaviy</button>
+                                class="fas fa-plus"></i> Add New</button>
+                        <button class="btn btn-secondary" onclick="openModal('bulk-add-modal')"><i
+                                class="fas fa-file-import"></i> Bulk</button>
                     </div>
                 </div>
-                <div class="glass-card" style="padding: 0; overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>So'z</th>
-                                <th>Tarjimasi</th>
-                                <th>Amallar</th>
-                            </tr>
-                        </thead>
-                        <tbody id="words-table-body">
-                            <!-- Table rows injected here -->
-                        </tbody>
-                    </table>
+
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color: var(--text-muted);"></i>
+                    <input type="text" id="words-search" placeholder="Search words or translations..."
+                        oninput="filterWords()">
+                </div>
+
+                <div class="glass-card" style="padding: 0; overflow: hidden;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Word</th>
+                                    <th>Translation</th>
+                                    <th>Definiton</th>
+                                    <th style="width: 120px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="words-list">
+                                <!-- Words injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="view-settings" class="view">
+                <h1>Sozlamalar</h1>
+
+                <div class="glass-card">
+                    <h2><i class="fas fa-palette"></i> Interfeys mavzusi</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Ilovaning ko'rinishini o'zingizga
+                        moslang</p>
+                    <div class="theme-picker">
+                        <div class="theme-btn active" style="background: #0f172a;" title="Dark Blue"
+                            onclick="setTheme('dark', this)"></div>
+                        <div class="theme-btn" style="background: #0c4a6e;" title="Ocean"
+                            onclick="setTheme('ocean', this)"></div>
+                        <div class="theme-btn" style="background: #064e3b;" title="Forest"
+                            onclick="setTheme('forest', this)"></div>
+                        <div class="theme-btn" style="background: #2e1065;" title="Purple"
+                            onclick="setTheme('purple', this)"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h2><i class="fas fa-database"></i> Ma'lumotlar boshqaruvi</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Progressingizni saqlash yoki tiklash</p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Export
+                            JSON</button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()"><i
+                                class="fas fa-upload"></i> Import JSON</button>
+                        <input type="file" id="import-file" style="display: none;" onchange="importData(event)">
+                        <button class="btn btn-secondary"
+                            style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="resetApp()"><i
+                                class="fas fa-trash-alt"></i> Reset All</button>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h2><i class="fas fa-info-circle"></i> Ilova haqida</h2>
+                    <p style="color: var(--text-muted);">Reminder Pro v2.0 - Premium Edition</p>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Coded with ❤️ by Antigravity</p>
                 </div>
             </div>
         </main>
     </div>
 
     <!-- Modals -->
-    <div id="add-word-modal" class="modal" onclick="if(event.target==this) closeModal('add-word-modal')">
-        <div class="glass-card" style="width: 500px; border-color: var(--primary);">
-            <h2>Yangi so'z qo'shish</h2>
-            <div style="margin-top: 1.5rem;">
-                <input type="text" id="new-word-text" placeholder="So'z (inglizcha)">
-                <input type="text" id="new-word-trans" placeholder="Tarjimasi">
-                <textarea id="new-word-def" placeholder="Tavsifi (Definition)" rows="3"></textarea>
-                <button onclick="addWord()" class="btn btn-primary">Saqlash</button>
-                <button onclick="closeModal('add-word-modal')" class="btn"
-                    style="background: rgba(255,255,255,0.05); color: white;">Bekor qilish</button>
+    <div id="add-word-modal" class="modal-overlay" onclick="if(event.target==this) closeModal('add-word-modal')">
+        <div class="glass-card modal-card">
+            <h2><i class="fas fa-plus-circle" style="color: var(--primary);"></i> Yangi so'z qo'shish</h2>
+            <div class="input-group">
+                <label>Inglizcha so'z</label>
+                <input type="text" id="new-word" placeholder="Masalan: Awesome">
+            </div>
+            <div class="input-group">
+                <label>O'zbekcha tarjimasi</label>
+                <input type="text" id="new-trans" placeholder="Masalan: Judayam zo'r">
+            </div>
+            <div class="input-group">
+                <label>Tavsifi (Definition)</label>
+                <textarea id="new-def" placeholder="So'z haqida qisqacha ma'lumot..." rows="3"></textarea>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-primary" style="flex: 2;" onclick="saveNewWord()">Saqlash</button>
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('add-word-modal')">Bekor
+                    qilish</button>
             </div>
         </div>
     </div>
 
-    <div id="bulk-add-modal" class="modal" onclick="if(event.target==this) closeModal('bulk-add-modal')">
-        <div class="glass-card" style="width: 500px; border-color: var(--accent);">
-            <h2>Ommaviy qo'shish</h2>
-            <div style="margin-top: 1.5rem;">
-                <textarea id="bulk-text" placeholder="apple,olma&#10;book,kitob" rows="10"></textarea>
-                <button onclick="bulkAdd()" class="btn btn-primary" style="background: var(--accent);">Yuklash</button>
-                <button onclick="closeModal('bulk-add-modal')" class="btn"
-                    style="background: rgba(255,255,255,0.05); color: white;">Bekor qilish</button>
+    <div id="bulk-add-modal" class="modal-overlay" onclick="if(event.target==this) closeModal('bulk-add-modal')">
+        <div class="glass-card modal-card">
+            <h2><i class="fas fa-file-import" style="color: var(--accent);"></i> Ommaviy yuklash</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Har bir qatorga: "word, translation" formatida
+                yozing.</p>
+            <textarea id="bulk-input" rows="10"
+                placeholder="apple, olma&#10;banana, banan&#10;orange, apelsin"></textarea>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-accent" style="flex: 2;" onclick="processBulkAdd()">Yuklashni boshlash</button>
+                <button class="btn btn-secondary" style="flex: 1;"
+                    onclick="closeModal('bulk-add-modal')">Yopish</button>
             </div>
         </div>
     </div>
@@ -528,239 +1103,397 @@
     <div id="toast-container"></div>
 
     <script>
-        // Database State (localStorage)
-        let db = {
-            words: JSON.parse(localStorage.getItem('words')) || [],
-            xp: parseInt(localStorage.getItem('xp')) || 0,
-            streak: parseInt(localStorage.getItem('streak')) || 0,
-            lastActivity: localStorage.getItem('lastActivity') || null
+        // State Management
+        let appState = {
+            words: JSON.parse(localStorage.getItem('pro_words')) || [
+                { word: 'Elegance', trans: 'Nafosat', def: 'The quality of being graceful and stylish in appearance or manner.' },
+                { word: 'Persistent', trans: 'Qat\'iyatli', def: 'Continuing firmly or obstinately in a course of action in spite of difficulty.' },
+                { word: 'Innovation', trans: 'Yangilik', def: 'The action or process of innovating.' },
+                { word: 'Resilient', trans: 'Chidamli', def: 'Able to withstand or recover quickly from difficult conditions.' }
+            ],
+            xp: parseInt(localStorage.getItem('pro_xp')) || 0,
+            streak: parseInt(localStorage.getItem('pro_streak')) || 0,
+            theme: localStorage.getItem('pro_theme') || 'dark',
+            lastActivity: localStorage.getItem('pro_last_active') || null
         };
 
-        function saveDb() {
-            localStorage.setItem('words', JSON.stringify(db.words));
-            localStorage.setItem('xp', db.xp);
-            localStorage.setItem('streak', db.streak);
-            localStorage.setItem('lastActivity', db.lastActivity);
-            updateStats();
+        // UI Initialization
+        function initApp() {
+            setTheme(appState.theme);
+            updateGlobalStats();
+            renderWordsTable();
+            checkStreak();
+
+            // Notification Loop
+            setInterval(() => {
+                if (Math.random() > 0.7) showToast('Eslatma', 'Yangi so\'zlarni takrorlash vaqti bo\'ldi!');
+            }, 600000);
+        }
+
+        function saveState() {
+            localStorage.setItem('pro_words', JSON.stringify(appState.words));
+            localStorage.setItem('pro_xp', appState.xp);
+            localStorage.setItem('pro_streak', appState.streak);
+            localStorage.setItem('pro_theme', appState.theme);
+            localStorage.setItem('pro_last_active', new Date().toISOString());
+            updateGlobalStats();
+        }
+
+        function updateGlobalStats() {
+            document.getElementById('stat-words').innerText = appState.words.length;
+            document.getElementById('stat-xp').innerText = appState.xp;
+            document.getElementById('stat-streak').innerText = appState.streak;
+
+            // Update Mastery Circle
+            const target = 20; // Daily Goal
+            const progress = Math.min(100, Math.floor((appState.words.length / 50) * 100)); // Example logic
+            const circle = document.getElementById('mastery-circle');
+            if (circle) {
+                circle.style.setProperty('--percent', progress);
+                circle.querySelector('span').innerText = progress + '%';
+            }
+        }
+
+        function checkStreak() {
+            const last = appState.lastActivity;
+            if (!last) return;
+            const lastDate = new Date(last).toDateString();
+            const today = new Date().toDateString();
+
+            if (lastDate === today) return;
+
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (lastDate === yesterday.toDateString()) {
+                // Keep streak
+            } else {
+                appState.streak = 0;
+                saveState();
+            }
         }
 
         // Navigation
-        function showView(viewName) {
+        function showView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
             document.querySelectorAll('.mobile-nav a').forEach(a => a.classList.remove('active'));
 
-            document.getElementById(`view-${viewName}`).classList.add('active');
-
-            const desktopNav = document.getElementById(`nav-${viewName}`);
-            if (desktopNav) desktopNav.classList.add('active');
-
-            const mobileNav = document.getElementById(`m-nav-${viewName}`);
-            if (mobileNav) mobileNav.classList.add('active');
-
-            if (viewName === 'words') renderWordsTable();
-            if (viewName === 'learn') renderLearnList();
-            if (viewName === 'game') startNewQuiz();
-            updateStats();
-        }
-
-        function updateStats() {
-            document.getElementById('stat-words').innerText = db.words.length;
-            document.getElementById('stat-xp').innerText = db.xp;
-            document.getElementById('stat-streak').innerText = `🔥 ${db.streak}`;
-
-            const gameXp = document.getElementById('game-xp');
-            const gameStreak = document.getElementById('game-streak');
-            if (gameXp) gameXp.innerText = db.xp;
-            if (gameStreak) gameStreak.innerText = db.streak;
-        }
-
-        // Word Management
-        function renderWordsTable() {
-            const tbody = document.getElementById('words-table-body');
-            tbody.innerHTML = db.words.length ? '' : '<tr><td colspan="3" style="text-align:center">Hozircha so\'zlar yo\'q</td></tr>';
-            db.words.forEach((w, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: 600; color: var(--primary);">${w.word}</td>
-                    <td>${w.trans}</td>
-                    <td>
-                        <button onclick="deleteWord(${index})" style="background:none; border:none; color:var(--secondary); cursor:pointer"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function addWord() {
-            const word = document.getElementById('new-word-text').value.trim();
-            const trans = document.getElementById('new-word-trans').value.trim();
-            const def = document.getElementById('new-word-def').value.trim();
-
-            if (!word || !trans) return alert('So\'z va tarjimani kiriting');
-
-            db.words.push({ word, trans, def: def || '...' });
-            saveDb();
-            closeModal('add-word-modal');
-            renderWordsTable();
-            showToast('Muvaffaqiyatli', 'Yangi so\'z qo\'shildi');
-
-            // Clear inputs
-            document.getElementById('new-word-text').value = '';
-            document.getElementById('new-word-trans').value = '';
-            document.getElementById('new-word-def').value = '';
-        }
-
-        function bulkAdd() {
-            const text = document.getElementById('bulk-text').value;
-            const lines = text.split('\n');
-            let added = 0;
-            lines.forEach(line => {
-                const parts = line.split(/[,\-]/);
-                if (parts.length >= 2) {
-                    db.words.push({ word: parts[0].trim(), trans: parts[1].trim(), def: '...' });
-                    added++;
-                }
-            });
-            saveDb();
-            closeModal('bulk-add-modal');
-            renderWordsTable();
-            showToast('Bajarildi', `${added} ta so'z qo'shildi`);
-            document.getElementById('bulk-text').value = '';
-        }
-
-        function deleteWord(index) {
-            if (confirm('O\'chirmoqchimisiz?')) {
-                db.words.splice(index, 1);
-                saveDb();
-                renderWordsTable();
+            const targetView = document.getElementById(`view-${viewId}`);
+            if (targetView) {
+                targetView.classList.add('active');
+                const navLink = document.getElementById(`nav-${viewId}`);
+                const mNavLink = document.getElementById(`m-nav-${viewId}`);
+                if (navLink) navLink.classList.add('active');
+                if (mNavLink) mNavLink.classList.add('active');
             }
+
+            // View Specific Logic
+            if (viewId === 'flashcards') startFlashcards();
+            if (viewId === 'game') startNewGame();
+            if (viewId === 'words') renderWordsTable();
         }
 
-        // Learning
-        function renderLearnList() {
-            const list = document.getElementById('learn-list');
-            list.innerHTML = db.words.length ? '' : `
-                <div style="text-align: center; padding: 4rem;">
-                    <i class="fas fa-smile-beam" style="font-size: 4rem; color: var(--accent); margin-bottom: 1rem;"></i>
-                    <h2>Hozircha so'zlar yo'q</h2>
-                    <p style="color: var(--text-muted);">Qo'shish uchun So'zlar bo'limiga o'ting.</p>
-                </div>
-            `;
-            // Show last 10 words or random
-            db.words.slice(-10).forEach(w => {
-                const item = document.createElement('div');
-                item.style.cssText = 'border-bottom: 1px solid var(--glass-border); padding: 1.5rem 0; display: flex; gap: 2rem;';
-                item.innerHTML = `
-                    <div style="min-width: 150px;">
-                        <h3 style="font-size: 1.5rem; color: var(--primary);">${w.word}</h3>
-                        <p style="color: var(--text-muted);">${w.trans}</p>
-                    </div>
-                    <div style="flex: 1;">
-                        <p style="font-style: italic; color: var(--text-muted);">"${w.def}"</p>
+        // Flashcards Logic
+        let cardIndex = 0;
+        let learnSession = [];
+
+        function startFlashcards() {
+            if (appState.words.length === 0) {
+                document.getElementById('card-front-text').innerText = 'So\'z yo\'q';
+                return;
+            }
+            learnSession = [...appState.words].sort(() => 0.5 - Math.random());
+            cardIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            const card = learnSession[cardIndex];
+            document.getElementById('card-front-text').innerText = card.word;
+            document.getElementById('card-back-text').innerText = card.trans;
+            document.getElementById('card-def-text').innerText = card.def || 'Tavsif berilmagan.';
+            document.getElementById('card-counter').innerText = `${cardIndex + 1} / ${learnSession.length}`;
+            document.getElementById('active-card').classList.remove('flipped');
+        }
+
+        function flipCard() {
+            document.getElementById('active-card').classList.toggle('flipped');
+        }
+
+        function nextCard(e, known) {
+            e.stopPropagation();
+            if (known) {
+                popXP(e.clientX, e.clientY, 5);
+                appState.xp += 5;
+            }
+
+            cardIndex++;
+            if (cardIndex >= learnSession.length) {
+                cardIndex = 0;
+                showToast('Yaxshi!', 'Barcha kartalarni ko\'rib chiqdingiz!');
+            }
+            updateCard();
+            saveState();
+        }
+
+        // Game Logic
+        let currentGame = null;
+
+        function startNewGame() {
+            const box = document.getElementById('game-box');
+            if (appState.words.length < 4) {
+                box.innerHTML = `
+                    <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                        <i class="fas fa-lock" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1.5rem;"></i>
+                        <h2>O'yin uchun kamida 4 ta so'z kerak</h2>
+                        <button class="btn btn-primary" onclick="showView('words')">So'z qo'shish</button>
                     </div>
                 `;
-                list.appendChild(item);
-            });
-        }
-
-        // Game Mode
-        let currentQuiz = null;
-
-        function startNewQuiz() {
-            const box = document.getElementById('quiz-box');
-            if (db.words.length < 4) {
-                box.innerHTML = `<h2>O'yin uchun kamida 4 ta so'z kerak</h2>`;
                 return;
             }
 
-            const correct = db.words[Math.floor(Math.random() * db.words.length)];
-            const distractors = db.words.filter(w => w.word !== correct.word)
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 3);
+            const correct = appState.words[Math.floor(Math.random() * appState.words.length)];
+            const options = [correct];
 
-            const options = [correct, ...distractors].sort(() => 0.5 - Math.random());
-            currentQuiz = { correct, options };
+            while (options.length < 4) {
+                const rand = appState.words[Math.floor(Math.random() * appState.words.length)];
+                if (!options.find(o => o.word === rand.word)) options.push(rand);
+            }
+
+            options.sort(() => 0.5 - Math.random());
+            currentGame = { correct, options };
 
             box.innerHTML = `
-                <h2 style="font-size: 1.2rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem;">Translate:</h2>
-                <h3 style="font-size: 3rem; margin-bottom: 2rem; color: white;">${correct.word}</h3>
-                <div class="options-grid">
-                    ${options.map((opt, i) => `<button class="option-btn" onclick="checkAnswer(${i})">${opt.trans}</button>`).join('')}
+                <div style="text-align: center; padding: 1rem;">
+                    <p style="text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 1rem;">Translate this word:</p>
+                    <h2 style="font-size: 3.5rem; margin-bottom: 3rem;">${correct.word}</h2>
+                    <div class="game-options">
+                        ${options.map((opt, i) => `
+                            <div class="game-option" onclick="checkGameAnswer(this, ${i})">
+                                ${opt.trans}
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             `;
+
+            document.getElementById('game-xp').innerText = appState.xp;
+            document.getElementById('game-streak-val').innerText = appState.streak;
         }
 
-        function checkAnswer(index) {
-            const isCorrect = currentQuiz.options[index].word === currentQuiz.correct.word;
-            const box = document.getElementById('quiz-box');
+        function checkGameAnswer(el, idx) {
+            if (el.parentElement.classList.contains('locked')) return;
+            el.parentElement.classList.add('locked');
+
+            const isCorrect = currentGame.options[idx].word === currentGame.correct.word;
 
             if (isCorrect) {
-                const gain = 10 + (db.streak * 2);
-                db.xp += gain;
-                db.streak += 1;
-                box.innerHTML = `
-                    <div style="text-align: center;">
-                        <i class="fas fa-check-circle" style="font-size: 5rem; color: var(--accent); margin-bottom: 2rem;"></i>
-                        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">To'g'ri!</h2>
-                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2rem;">+${gain} XP qo'shildi</p>
-                        <button class="btn btn-primary" onclick="startNewQuiz()">Keyingi savol <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                `;
+                el.classList.add('correct');
+                appState.streak++;
+                const bonus = 10 + (appState.streak * 2);
+                appState.xp += bonus;
+                popXP(el.offsetLeft + 100, el.offsetTop, bonus);
+                showToast('To\'g\'ri!', `+${bonus} XP`);
             } else {
-                db.streak = 0;
-                box.innerHTML = `
-                    <div style="text-align: center;">
-                        <i class="fas fa-times-circle" style="font-size: 5rem; color: var(--secondary); margin-bottom: 2rem;"></i>
-                        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Noto'g'ri</h2>
-                        <p style="margin-bottom: 2rem;">To'g'ri javob: <b>${currentQuiz.correct.trans}</b></p>
-                        <button class="btn btn-primary" onclick="startNewQuiz()">Qayta urinish</button>
-                    </div>
-                `;
+                el.classList.add('wrong');
+                appState.streak = 0;
+                showToast('Xato', `To'g'ri javob: ${currentGame.correct.trans}`, 'danger');
             }
-            db.lastActivity = new Date().toISOString();
-            saveDb();
+
+            setTimeout(() => {
+                startNewGame();
+                saveState();
+            }, 1200);
         }
 
-        // Reminders & Toasts
-        function showToast(title, body) {
+        // Word Management
+        function renderWordsTable(data = appState.words) {
+            const list = document.getElementById('words-list');
+            list.innerHTML = data.length ? '' : '<tr><td colspan="4" style="text-align:center; padding: 3rem; color: var(--text-muted);">Sizda hali so\'zlar yo\'q. "Add New" tugmasi orqali qo\'shing.</td></tr>';
+
+            data.forEach((w, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="word-cell">${w.word}</td>
+                    <td>${w.trans}</td>
+                    <td style="color: var(--text-muted); font-size: 0.9rem;">${w.def || '---'}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn" onclick="speakTextSpecific('${w.word}')"><i class="fas fa-volume-high"></i></button>
+                            <button class="action-btn delete" onclick="deleteWord(${i})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+        }
+
+        function filterWords() {
+            const query = document.getElementById('words-search').value.toLowerCase();
+            const filtered = appState.words.filter(w =>
+                w.word.toLowerCase().includes(query) ||
+                w.trans.toLowerCase().includes(query)
+            );
+            renderWordsTable(filtered);
+        }
+
+        function saveNewWord() {
+            const word = document.getElementById('new-word').value.trim();
+            const trans = document.getElementById('new-trans').value.trim();
+            const def = document.getElementById('new-def').value.trim();
+
+            if (!word || !trans) return showToast('Xatolik', 'So\'z va tarjimani kiriting', 'danger');
+
+            appState.words.push({ word, trans, def });
+            saveState();
+            closeModal('add-word-modal');
+            renderWordsTable();
+            showToast('Muvaffaqiyatli', 'Yangi so\'z lug\'atga qo\'shildi');
+
+            document.getElementById('new-word').value = '';
+            document.getElementById('new-trans').value = '';
+            document.getElementById('new-def').value = '';
+        }
+
+        function deleteWord(idx) {
+            if (confirm('Ushbu so\'zni o\'chirmoqchimisiz?')) {
+                appState.words.splice(idx, 1);
+                saveState();
+                renderWordsTable();
+                showToast('O\'chirildi', 'So\'z ro\'yxatdan olib tashlandi');
+            }
+        }
+
+        function processBulkAdd() {
+            const val = document.getElementById('bulk-input').value;
+            const lines = val.split('\n');
+            let count = 0;
+
+            lines.forEach(line => {
+                const parts = line.split(',');
+                if (parts.length >= 2) {
+                    appState.words.push({
+                        word: parts[0].trim(),
+                        trans: parts[1].trim(),
+                        def: parts[2] ? parts[2].trim() : ''
+                    });
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                saveState();
+                renderWordsTable();
+                closeModal('bulk-add-modal');
+                showToast('Yuklandi', `${count} ta yangi so'z qo'shildi`);
+                document.getElementById('bulk-input').value = '';
+            }
+        }
+
+        // Settings & Theme
+        function setTheme(theme, el) {
+            document.body.setAttribute('data-theme', theme);
+            appState.theme = theme;
+            saveState();
+
+            if (el) {
+                document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                el.classList.add('active');
+            }
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "reminder_pro_backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    appState = { ...appState, ...imported };
+                    saveState();
+                    location.reload();
+                } catch (err) {
+                    showToast('Xatolik', 'Fayl formati noto\'g\'ri', 'danger');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetApp() {
+            if (confirm('DIQQAT! Barcha ma\'lumotlar o\'chib ketadi. Ishonchingiz komilmi?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // Utilities
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        function showToast(title, msg, type = 'primary') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'glass-card animate-fade-in';
-            toast.style.padding = '1rem 1.5rem';
-            toast.style.borderColor = 'var(--primary)';
-            toast.style.minWidth = '300px';
-            toast.style.margin = '0';
+            toast.className = 'toast';
+            if (type === 'danger') toast.style.borderLeftColor = 'var(--danger)';
+
             toast.innerHTML = `
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <i class="fas fa-bell" style="color: var(--primary); font-size: 1.2rem;"></i>
-                    <div style="text-align: left;">
-                        <strong style="display: block; color: white;">${title}</strong>
-                        <small style="color: var(--text-muted);">${body}</small>
-                    </div>
+                <i class="fas ${type === 'danger' ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i>
+                <div>
+                    <div style="font-weight: 800; font-size: 0.9rem;">${title}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${msg}</div>
                 </div>
             `;
+
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
+                toast.style.transform = 'translateX(50px)';
                 setTimeout(() => toast.remove(), 500);
-            }, 4000);
+            }, 3000);
         }
 
-        function runReminder() {
-            if (db.words.length > 0) {
-                showToast("💡 O'rganish vaqti!", "Bugungi yangi so'zlarni takrorladingizmi? Bilimingizni sinash uchun Game Mode'ga kiring.");
-            }
+        function popXP(x, y, amount) {
+            const pop = document.createElement('div');
+            pop.className = 'xp-pop';
+            pop.innerText = `+${amount} XP`;
+            pop.style.left = x + 'px';
+            pop.style.top = y + 'px';
+            document.body.appendChild(pop);
+            setTimeout(() => pop.remove(), 1000);
         }
 
-        // Modals
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function speakText(e) {
+            if (e) e.stopPropagation();
+            const text = document.getElementById('card-front-text').innerText;
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+        }
 
-        // Init
-        updateStats();
-        setInterval(runReminder, 600000); // 10 min
-        setTimeout(runReminder, 5000); // Initial
+        function speakTextSpecific(text) {
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+        }
+
+        // Init on Load
+        window.addEventListener('load', initApp);
     </script>
 </body>
 
