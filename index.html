@@ -608,18 +608,19 @@
         }
 
         .game-title {
-            font-size: 3.5rem;
-            margin-bottom: 2rem;
-            font-weight: 1000;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 900;
             color: white;
-            text-shadow: 0 0 30px var(--primary-glow);
+            text-shadow: 0 0 20px var(--primary-glow);
             word-break: break-word;
+            text-align: center;
         }
 
         .game-option-text {
-            font-size: 1.35rem;
-            padding: 2.2rem;
-            border-radius: 30px;
+            font-size: 1rem;
+            padding: 1.2rem;
+            border-radius: 20px;
         }
 
         #writing-input {
@@ -922,16 +923,17 @@
             }
 
             .game-title {
-                font-size: 2.2rem;
-                margin-bottom: 1.5rem;
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
                 word-break: break-word;
                 line-height: 1.2;
+                text-align: center;
             }
 
             .game-option-text {
-                font-size: 1.1rem;
-                padding: 1.2rem;
-                border-radius: 20px;
+                font-size: 0.9rem;
+                padding: 1rem;
+                border-radius: 16px;
             }
 
             #writing-input {
@@ -965,7 +967,12 @@
             }
 
             .game-title {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+            }
+
+            .game-option-text {
+                font-size: 0.85rem;
+                padding: 0.8rem;
             }
 
             .stat-value {
@@ -1814,12 +1821,12 @@
             currentGame = { correct, options, mode: 'choice' };
 
             box.innerHTML = `
-                <div style="text-align: center;">
-                    <p style="text-transform: uppercase; letter-spacing: 4px; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 800; font-size: 0.9rem;">Tarjima qiling:</p>
-                    <h2 class="game-title">${correct.word}</h2>
-                    <div class="game-options" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                <div style="text-align: center; width: 100%;">
+                    <p style="text-transform: uppercase; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; font-size: 0.75rem;">Tarjima qiling:</p>
+                    <h3 class="game-title">${correct.word}</h3>
+                    <div class="game-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem;">
                         ${options.map((opt, i) => `
-                            <div class="game-option unit-card game-option-text" style="border-width: 1px;" onclick="checkGameAnswer(this, ${i})">
+                            <div class="game-option unit-card game-option-text" style="border-width: 1px; cursor: pointer;" onclick="checkGameAnswer(this, ${i})">
                                 ${opt.trans}
                             </div>
                         `).join('')}
@@ -1832,11 +1839,11 @@
             currentGame = { correct, mode: 'writing' };
             box.innerHTML = `
                 <div style="text-align: center; width: 100%;">
-                    <p style="text-transform: uppercase; letter-spacing: 4px; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 800; font-size: 0.9rem;">O'zbekchaga tarjima qiling:</p>
-                    <h2 class="game-title">${correct.word}</h2>
-                    <div style="max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <p style="text-transform: uppercase; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; font-size: 0.75rem;">O'zbekchaga tarjima qiling:</p>
+                    <h3 class="game-title">${correct.word}</h3>
+                    <div style="max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
                         <input type="text" id="writing-input" placeholder="Tarjimani yozing..." autocomplete="off">
-                        <button class="btn btn-primary pro-btn" style="padding: 1.5rem; font-size: 1.2rem; border-radius: 20px;" onclick="checkWritingAnswer()">
+                        <button class="btn btn-primary pro-btn" style="padding: 1rem; font-size: 1rem; border-radius: 16px;" onclick="checkWritingAnswer()">
                             <i class="fas fa-paper-plane"></i> Tekshirish
                         </button>
                     </div>
