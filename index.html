@@ -617,6 +617,18 @@
             text-align: center;
         }
 
+        #game-box {
+            width: 100%;
+            max-width: 800px;
+            min-height: 500px;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
         .game-option-text {
             font-size: 1rem;
             padding: 1.2rem;
@@ -1052,6 +1064,56 @@
             }
         }
 
+        /* Bulletproof Mobile Centering Fix */
+        @media (max-width: 768px) {
+            .app-container {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            main {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+                padding: 1rem !important;
+                padding-bottom: 8rem !important;
+                max-width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+
+            .view.active {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+            }
+
+            #game-box {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 1.2rem !important;
+                min-height: 300px !important;
+                margin: 0 auto !important;
+                border-radius: 25px !important;
+            }
+
+            .game-options {
+                grid-template-columns: 1fr !important;
+                width: 100% !important;
+                gap: 0.8rem !important;
+            }
+
+            .game-title {
+                font-size: 1.6rem !important;
+                margin-bottom: 1rem !important;
+                width: 100% !important;
+                text-align: center !important;
+            }
+        }
+
         /* Toast Notifications */
         #toast-container {
             position: fixed;
@@ -1333,8 +1395,7 @@
         </div>
 
         <div class="flashcard-view-container">
-            <div class="glass-card" id="game-box"
-                style="width: 100%; max-width: 800px; min-height: 500px; padding: 4rem; display: flex; flex-direction: column; justify-content: center;">
+            <div class="glass-card" id="game-box">
                 <div style="text-align: center; color: var(--text-muted);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem;"></i>
                     <p>Yuklanmoqda...</p>
@@ -1862,10 +1923,10 @@
             currentGame = { correct, options, mode: 'choice' };
 
             box.innerHTML = `
-                <div style="text-align: center; width: 100%;">
+                <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
                     <p style="text-transform: uppercase; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; font-size: 0.75rem;">Tarjima qiling:</p>
                     <h3 class="game-title">${correct.word}</h3>
-                    <div class="game-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem;">
+                    <div class="game-options">
                         ${options.map((opt, i) => `
                             <div class="game-option unit-card game-option-text" style="border-width: 1px; cursor: pointer;" onclick="checkGameAnswer(this, ${i})">
                                 ${opt.trans}
