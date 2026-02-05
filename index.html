@@ -600,6 +600,69 @@
             animation: pulse-green 0.5s;
         }
 
+        /* Ultra Pro Enhancements */
+        .unit-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .unit-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 30px 60px -20px var(--primary-glow);
+        }
+
+        .pro-btn {
+            position: relative;
+            z-index: 1;
+        }
+
+        .pro-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s;
+            border-radius: inherit;
+        }
+
+        .pro-btn:hover::before {
+            opacity: 1;
+        }
+
+        .timer-container {
+            width: 100%;
+            height: 8px;
+            background: var(--glass);
+            border-radius: 10px;
+            margin-top: 2rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.1s linear;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: black;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 900;
+            margin-left: 1rem;
+        }
+
         .game-option.wrong {
             background: var(--danger) !important;
             border-color: white;
@@ -900,15 +963,15 @@
                 <div class="stats-grid">
                     <div class="glass-card stat-item">
                         <i class="fas fa-book"></i>
-                        <span class="stat-label">Jami so'zlar</span>
+                        <span class="stat-label">So'zlar</span>
                         <span class="stat-value" id="stat-words" style="color: var(--primary);">0</span>
                     </div>
-                    <div class="glass-card stat-item">
+                    <div class="glass-card stat-item" style="border-color: var(--warning);">
                         <i class="fas fa-bolt"></i>
-                        <span class="stat-label">Tajriba (XP)</span>
+                        <span class="stat-label">XP <span id="user-level" class="level-badge">LVL 1</span></span>
                         <span class="stat-value" id="stat-xp" style="color: var(--warning);">0</span>
                     </div>
-                    <div class="glass-card stat-item">
+                    <div class="glass-card stat-item" style="border-color: var(--secondary);">
                         <i class="fas fa-fire"></i>
                         <span class="stat-label">Streak</span>
                         <span class="stat-value" id="stat-streak" style="color: var(--secondary);">0</span>
@@ -1122,13 +1185,18 @@
             <h2><i class="fas fa-database"></i> Ma'lumotlar boshqaruvi</h2>
             <p style="color: var(--text-muted); margin-bottom: 2rem;">Progressingizni saqlash yoki tiklash</p>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button class="btn btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Export
+                <button class="btn btn-secondary pro-btn" onclick="exportData()"><i class="fas fa-download"></i> Export
                     JSON</button>
-                <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()"><i
+                <button class="btn btn-secondary pro-btn" onclick="document.getElementById('import-file').click()"><i
                         class="fas fa-upload"></i> Import JSON</button>
                 <input type="file" id="import-file" style="display: none;" onchange="importData(event)">
-                <button class="btn btn-secondary" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);"
-                    onclick="resetApp()"><i class="fas fa-trash-alt"></i> Reset All</button>
+                <button class="btn btn-accent pro-btn"
+                    onclick="appState.words=[]; appState.mastered=[]; syncLibrary(); location.reload();">
+                    <i class="fas fa-sync"></i> Refresh Library
+                </button>
+                <button class="btn btn-secondary pro-btn"
+                    style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="resetApp()"><i
+                        class="fas fa-trash-alt"></i> Reset All</button>
             </div>
         </div>
 
@@ -1187,20 +1255,37 @@
         let appState = {
             words: JSON.parse(localStorage.getItem('pro_words')) || [],
             xp: parseInt(localStorage.getItem('pro_xp')) || 0,
+            level: parseInt(localStorage.getItem('pro_level')) || 1,
             streak: parseInt(localStorage.getItem('pro_streak')) || 0,
             theme: localStorage.getItem('pro_theme') || 'dark',
             lastActivity: localStorage.getItem('pro_last_active') || null,
-            currentUnit: null
+            currentUnit: null,
+            mastered: JSON.parse(localStorage.getItem('pro_mastered')) || [] // Mastered word IDs
         };
 
-        // Agar so'zlar bo'sh bo'lsa, ALL_UNITS dan yuklaymiz
-        if (appState.words.length === 0 && typeof ALL_UNITS !== 'undefined') {
+        // Ultra Pro Sync: Ensure all ALL_UNITS words are in appState.words
+        function syncLibrary() {
+            if (typeof ALL_UNITS === 'undefined') return;
+            let addedCount = 0;
             ALL_UNITS.forEach(unit => {
                 unit.words.forEach(w => {
-                    appState.words.push({ ...w, unit: unit.id });
+                    const exists = appState.words.find(sw => sw.word === w.word);
+                    if (!exists) {
+                        appState.words.push({ ...w, unit: unit.id, id: Math.random().toString(36).substr(2, 9) });
+                        addedCount++;
+                    } else if (!exists.unit) {
+                        exists.unit = unit.id; // Update unit if missing
+                        exists.id = exists.id || Math.random().toString(36).substr(2, 9);
+                    }
                 });
             });
+            if (addedCount > 0) {
+                saveState();
+                console.log(`Library synced: ${addedCount} words added.`);
+            }
         }
+
+        syncLibrary();
 
         // UI Initialization
         function initApp() {
@@ -1220,25 +1305,35 @@
             const container = document.getElementById('units-container');
             if (!container || typeof ALL_UNITS === 'undefined') return;
 
-            container.innerHTML = ALL_UNITS.map(unit => `
-                <div class="glass-card" style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; justify-content: space-between;">
+            container.innerHTML = ALL_UNITS.map(unit => {
+                const unitWords = appState.words.filter(w => w.unit === unit.id);
+                const masteredInUnit = unitWords.filter(w => appState.mastered.includes(w.word)).length;
+                const progress = unitWords.length > 0 ? Math.floor((masteredInUnit / unitWords.length) * 100) : 0;
+
+                return `
+                <div class="glass-card unit-card" style="padding: 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; justify-content: space-between; border-radius: 40px; position: relative;">
+                    <div class="unit-progress-bg" style="position: absolute; top:0; left:0; width: ${progress}%; height: 6px; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 40px 40px 0 0; transition: width 1s ease;"></div>
                     <div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <span style="background: var(--primary-glow); color: var(--primary); padding: 0.4rem 1rem; border-radius: 12px; font-size: 0.8rem; font-weight: 900; letter-spacing: 1px;">${unit.id}</span>
-                            <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 700;">${unit.words.length} so'z</span>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                            <span style="background: var(--primary-glow); color: var(--primary); padding: 0.5rem 1.2rem; border-radius: 15px; font-size: 0.85rem; font-weight: 900; letter-spacing: 2px;">${unit.id}</span>
+                            <div style="text-align: right;">
+                                <div style="color: white; font-size: 1.1rem; font-weight: 800;">${progress}%</div>
+                                <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Mastery</div>
+                            </div>
                         </div>
-                        <h3 style="font-size: 1.4rem; font-weight: 900; line-height: 1.4; color: white;">${unit.name}</h3>
+                        <h3 style="font-size: 1.6rem; font-weight: 1000; line-height: 1.3; color: white; margin-bottom: 0.5rem;">${unit.name}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 500;">${unitWords.length} ta umumiy so'z</p>
                     </div>
-                    <div style="display: flex; gap: 0.8rem;">
-                        <button class="btn btn-secondary" style="flex: 1.2; font-size: 0.9rem; border-radius: 18px;" onclick="startUnitStudy('${unit.id}', 'flashcards')">
-                            <i class="fas fa-book-open"></i> Kartalar
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button class="btn btn-secondary pro-btn" style="flex: 1.2; font-size: 0.95rem; border-radius: 22px; padding: 1.2rem;" onclick="startUnitStudy('${unit.id}', 'flashcards')">
+                            <i class="fas fa-brain"></i> Mashq
                         </button>
-                        <button class="btn btn-primary" style="flex: 1; font-size: 0.9rem; border-radius: 18px;" onclick="startUnitStudy('${unit.id}', 'game')">
-                            <i class="fas fa-bolt"></i> Test
+                        <button class="btn btn-primary pro-btn" style="flex: 1; font-size: 0.95rem; border-radius: 22px; padding: 1.2rem;" onclick="startUnitStudy('${unit.id}', 'game')">
+                            <i class="fas fa-play"></i> Test
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function startUnitStudy(unitId, mode) {
@@ -1250,24 +1345,53 @@
         function saveState() {
             localStorage.setItem('pro_words', JSON.stringify(appState.words));
             localStorage.setItem('pro_xp', appState.xp);
+            localStorage.setItem('pro_level', appState.level);
             localStorage.setItem('pro_streak', appState.streak);
             localStorage.setItem('pro_theme', appState.theme);
+            localStorage.setItem('pro_mastered', JSON.stringify(appState.mastered));
             localStorage.setItem('pro_last_active', new Date().toISOString());
             updateGlobalStats();
         }
 
         function updateGlobalStats() {
-            document.getElementById('stat-words').innerText = appState.words.length;
-            document.getElementById('stat-xp').innerText = appState.xp;
-            document.getElementById('stat-streak').innerText = appState.streak;
+            if (document.getElementById('stat-words')) document.getElementById('stat-words').innerText = appState.words.length;
+            if (document.getElementById('stat-xp')) document.getElementById('stat-xp').innerText = appState.xp;
+            if (document.getElementById('stat-streak')) document.getElementById('stat-streak').innerText = appState.streak;
 
-            // Update Mastery Circle
-            const progress = Math.min(100, Math.floor((appState.xp / 1000) * 100)); // XP ga qarab progress
+            // Level Calculation
+            const oldLevel = appState.level;
+            appState.level = Math.floor(appState.xp / 500) + 1;
+
+            const levelBadge = document.getElementById('user-level');
+            if (levelBadge) levelBadge.innerText = 'LVL ' + appState.level;
+
+            if (appState.level > oldLevel && oldLevel > 0) {
+                showToast('LEVEL UP!', `Tabriklaymiz! Siz ${appState.level}-darajaga ko'tarildingiz!`, 'success');
+                confettiEffect();
+            }
+
+            // Mastery Calculation
+            const totalWords = appState.words.length;
+            const masteredCount = appState.mastered.length;
+            const progress = totalWords > 0 ? Math.floor((masteredCount / totalWords) * 100) : 0;
+
             const circle = document.getElementById('mastery-circle');
             if (circle) {
                 circle.style.setProperty('--percent', progress);
                 circle.querySelector('span').innerText = progress + '%';
                 document.getElementById('mastery-text').innerText = progress + '%';
+            }
+        }
+
+        function confettiEffect() {
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = window.innerHeight;
+                    const icons = ['🎊', '⭐', '🚀', '🔥', '💎'];
+                    const icon = icons[Math.floor(Math.random() * icons.length)];
+                    popXP(x, y - 100, icon);
+                }, i * 100);
             }
         }
 
@@ -1320,11 +1444,19 @@
                 filteredWords = appState.words.filter(w => w.unit === appState.currentUnit);
             }
 
-            if (filteredWords.length === 0) {
+            // Exclude mastered words from learning unless specifically chosen
+            const learningSet = filteredWords.filter(w => !appState.mastered.includes(w.word));
+
+            if (learningSet.length === 0 && filteredWords.length > 0) {
+                showToast('Ajoyib!', 'Ushbu Unitdagi barcha so\'zlarni yodlagansiz!', 'success');
+                learnSession = [...filteredWords].sort(() => 0.5 - Math.random());
+            } else if (learningSet.length === 0) {
                 document.getElementById('card-front-text').innerText = 'So\'z yo\'q';
                 return;
+            } else {
+                learnSession = [...learningSet].sort(() => 0.5 - Math.random());
             }
-            learnSession = [...filteredWords].sort(() => 0.5 - Math.random());
+
             cardIndex = 0;
             updateCard();
         }
@@ -1346,27 +1478,38 @@
 
         function nextCard(e, known) {
             e.stopPropagation();
+            const currentWord = learnSession[cardIndex].word;
+
             if (known) {
-                popXP(e.clientX, e.clientY, 5);
-                appState.xp += 5;
+                popXP(e.clientX, e.clientY, 10);
+                appState.xp += 10;
+                if (!appState.mastered.includes(currentWord)) {
+                    appState.mastered.push(currentWord);
+                    showToast('Yodlandi!', `"${currentWord}" mastered listiga qo'shildi`, 'success');
+                }
             }
 
             cardIndex++;
             if (cardIndex >= learnSession.length) {
-                cardIndex = 0;
-                showToast('Yaxshi!', 'Barcha kartalarni ko\'rib chiqdingiz!');
+                showToast('Tugadi!', 'Barcha so\'zlarni takrorladingiz!', 'success');
+                showView('dashboard');
+                return;
             }
             updateCard();
             saveState();
+            renderUnits();
         }
 
         // Game Logic
         let currentGame = null;
+        let gameTimer = null;
+        let timeLeft = 0;
 
         function startNewGame() {
             const box = document.getElementById('game-box');
-            let filteredWords = appState.words;
+            document.getElementById('game-timer-container').style.display = 'block';
 
+            let filteredWords = appState.words;
             if (appState.currentUnit) {
                 filteredWords = appState.words.filter(w => w.unit === appState.currentUnit);
             }
@@ -1396,10 +1539,10 @@
             box.innerHTML = `
                 <div style="text-align: center;">
                     <p style="text-transform: uppercase; letter-spacing: 4px; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 800; font-size: 0.9rem;">Tarjima qiling:</p>
-                    <h2 style="font-size: 4rem; margin-bottom: 4rem; font-weight: 1000; color: white;">${correct.word}</h2>
+                    <h2 style="font-size: 4.5rem; margin-bottom: 4rem; font-weight: 1000; color: white; text-shadow: 0 0 30px var(--primary-glow);">${correct.word}</h2>
                     <div class="game-options" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
                         ${options.map((opt, i) => `
-                            <div class="game-option" style="padding: 2rem; font-size: 1.2rem; border-radius: 25px;" onclick="checkGameAnswer(this, ${i})">
+                            <div class="game-option unit-card" style="padding: 2.2rem; font-size: 1.35rem; border-radius: 30px; border-width: 1px;" onclick="checkGameAnswer(this, ${i})">
                                 ${opt.trans}
                             </div>
                         `).join('')}
@@ -1407,11 +1550,34 @@
                 </div>
             `;
 
+            startTimer();
             document.getElementById('game-xp').innerText = appState.xp;
-            document.getElementById('game-streak-val').innerText = appState.streak;
+        }
+
+        function startTimer() {
+            clearInterval(gameTimer);
+            timeLeft = 10;
+            const bar = document.getElementById('game-timer-bar');
+            bar.style.width = '100%';
+
+            gameTimer = setInterval(() => {
+                timeLeft -= 0.1;
+                bar.style.width = (timeLeft * 10) + '%';
+                if (timeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    handleTimeOut();
+                }
+            }, 100);
+        }
+
+        function handleTimeOut() {
+            showToast('Vaqt tugadi!', 'Kechikdingiz, urinib ko\'ring!', 'danger');
+            appState.streak = 0;
+            setTimeout(startNewGame, 1000);
         }
 
         function checkGameAnswer(el, idx) {
+            clearInterval(gameTimer);
             if (el.parentElement.classList.contains('locked')) return;
             el.parentElement.classList.add('locked');
 
@@ -1420,10 +1586,10 @@
             if (isCorrect) {
                 el.classList.add('correct');
                 appState.streak++;
-                const bonus = 10 + (appState.streak * 2);
+                const bonus = 15 + Math.floor(timeLeft * 2);
                 appState.xp += bonus;
                 popXP(el.offsetLeft + 100, el.offsetTop, bonus);
-                showToast('To\'g\'ri!', `+${bonus} XP`);
+                showToast('To\'g\'ri!', `+${bonus} XP (Bonus: ${Math.floor(timeLeft)}s)`);
             } else {
                 el.classList.add('wrong');
                 appState.streak = 0;
