@@ -308,36 +308,39 @@ header p {
 }
 
 /* --- Floating Navbar --- */
+/* --- Floating Navbar --- */
 .navbar {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 48px);
-  max-width: 400px;
-  background: rgba(10, 10, 20, 0.8);
+  width: 92%;
+  max-width: 440px;
+  background: rgba(10, 10, 20, 0.85);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-full);
-  padding: 8px;
+  padding: 8px 12px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
   z-index: 999;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
 
 .nav-item {
-  padding: 14px 24px;
+  padding: 12px 18px;
   border-radius: var(--radius-full);
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-dim);
   display: flex;
   align-items: center;
   gap: 8px;
   transition: 0.3s;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .nav-item.active {
