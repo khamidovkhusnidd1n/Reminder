@@ -46,11 +46,105 @@ function updateNavActive(el) {
     el.classList.add('active');
 }
 
-function updateRanksXP() {
-    const el = document.getElementById('rank-you-xp');
-    const nameEl = document.getElementById('rank-you-name');
-    if (el) el.innerText = `${stats.level * 120 + stats.xp} XP`;
-    if (nameEl) nameEl.innerText = stats.nickname || "YOU";
+// --- Online Leaderboard (Pantry Cloud) ---
+// 1. https://getpantry.cloud saytiga kiring "Get Started" bosing.
+// 2. Yangi Pantry yarating.
+// 3. O'sha Pantry ID raqamini shu yerga yozing:
+const YOUR_PANTRY_ID = "af7d8502-edc4-4cc1-9cfc-aff8824f08e0"; // Masalan: "8472-3232-..."
+const BUCKET_NAME = "ReminderLeaderboard";
+
+async function updateRanksXP() {
+    const list = document.getElementById('ranks-list');
+    if (!list) return;
+
+    // 1. Show Local State First (Immediate Feedback)
+    const totalXP = (stats.level * 120) + stats.xp;
+    const myName = stats.nickname || "YOU";
+
+    // Agar ID qo'yilmagan bo'lsa, faqat o'zini ko'rsatadi
+    if (!YOUR_PANTRY_ID) {
+        list.innerHTML = `
+            <div style="background:rgba(255,165,0,0.1); border:1px solid orange; padding:10px; border-radius:12px; margin-bottom:12px;">
+                <p style="font-size:0.75rem; color:orange;">⚠️ Onlayn rejim ishlashi uchun <b>app.js</b> fayliga <b>Pantry ID</b> kiritishingiz kerak.</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,215,0,0.1); border:1px solid gold; padding:16px; border-radius:16px;">
+                <span style="font-weight:800;">${myName}</span>
+                <span style="color:gold; font-weight:800;">${totalXP} XP</span>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Yuklanmoqda...</div>`;
+
+    try {
+        const url = `https://getpantry.cloud/apiv1/pantry/${YOUR_PANTRY_ID}/basket/${BUCKET_NAME}`;
+
+        // 2. Fetch remote data
+        let players = [];
+        try {
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                players = data.players || [];
+            }
+        } catch (e) {
+            console.log("Creating new leaderboard...");
+        }
+
+        // 3. Update/Add Self
+        // Remove old version of myself (by name)
+        players = players.filter(p => p.name !== myName);
+
+        // Add current state
+        players.push({
+            name: myName,
+            xp: totalXP,
+            lastSeen: Date.now()
+        });
+
+        // 4. Sort & Limit
+        players.sort((a, b) => b.xp - a.xp);
+        players = players.slice(0, 50); // Keep top 50 only
+
+        // 5. Send back to cloud (Background sync)
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ players: players })
+        }).catch(err => console.error("Save error:", err));
+
+        // 6. Render Full List
+        list.innerHTML = '';
+        players.forEach((u, i) => {
+            const isMe = u.name === myName;
+            const item = document.createElement('div');
+
+            const bg = isMe ? 'rgba(255,215,0,0.15)' : 'rgba(255,255,255,0.05)';
+            const border = isMe ? '1px solid gold' : '1px solid var(--glass-border)';
+            const color = isMe ? 'gold' : '#fff';
+            const rankDisplay = i < 3 ? ['🥇', '🥈', '🥉'][i] : `#${i + 1}`;
+
+            item.style = `display:flex; justify-content:space-between; align-items:center; background:${bg}; border:${border}; padding:14px; border-radius:14px; margin-bottom:8px;`;
+            if (isMe) item.style.transform = "scale(1.02)";
+
+            item.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.2rem; min-width:24px; font-weight:800;">${rankDisplay}</span>
+                    <div>
+                        <span style="font-weight:${isMe ? '900' : '700'}; color:${color}; font-size:0.95rem; display:block;">${u.name}</span>
+                        <span style="font-size:0.65rem; color:var(--text-muted);">${isMe ? 'online' : 'player'}</span>
+                    </div>
+                </div>
+                <span style="font-weight:800; color:var(--accent);">${u.xp} XP</span>
+            `;
+            list.appendChild(item);
+        });
+
+    } catch (err) {
+        console.error(err);
+        list.innerHTML = `<div style="color:var(--error); text-align:center;">Internet xatosi!</div>`;
+    }
 }
 
 // Text-to-Speech Helper
